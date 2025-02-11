@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "375762163417",
+    "project_id": "honoursproject-4100c",
+    "storage_bucket": "honoursproject-4100c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375762163417:android:f19a5f0bc9bcd6d59fd0c8",
+        "android_client_info": {
+          "package_name": "com.honoursproject.epialarm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCSsqK0BQ9PbP_j1CcS63WYn57s0c_prU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:honours_project/routes.dart';
+import '../auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,12 +9,23 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _email = '';
-  String _password = '';
+  String email = '';
+  String password = '';
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
-      print("Login successful");
+  final TextEditingController controllerEmail = TextEditingController();
+  final TextEditingController controllerPassword = TextEditingController();
+
+  Future<void> login() async {
+    try{
+      await Auth().signInWithEmailAndPassword( 
+      email: controllerEmail.text, 
+      password: controllerPassword.text,);
+
+      Navigator.pushNamed(context, AppRoutes.home);
+    } catch (e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('An unknown error occured: $e'),
+        ));
     }
   }
 
@@ -31,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
+                controller: controllerEmail,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
@@ -46,11 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _email = value!;
+                  email = value!;
                 },
               ),
               SizedBox(height: 16.0),
               TextFormField(
+                controller: controllerPassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
@@ -66,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _password = value!;
+                  password = value!;
                 },
               ),
               SizedBox(height: 24.0),
@@ -74,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    _login();
+                    login();
                   }
                 },
                 child: Text('Login'),

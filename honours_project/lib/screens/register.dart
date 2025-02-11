@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:honours_project/routes.dart';
+import '../auth.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -7,13 +9,29 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _email = '';
-  String _password = '';
-  String _name = '';
+  String email = '';
+  String password = '';
+  String firstName = '';
+  String surname = '';
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
-      print("Login successful");
+  final TextEditingController controllerEmail = TextEditingController();
+  final TextEditingController controllerPassword = TextEditingController();
+  final TextEditingController controllerFirstName = TextEditingController();
+  final TextEditingController controllerSurname = TextEditingController();
+
+  Future<void> register() async {
+    try{
+      await Auth().createUserWithEmailAndPassword(
+      firstName: controllerFirstName.text,
+      surname: controllerSurname.text, 
+      email: controllerEmail.text, 
+      password: controllerPassword.text,);
+
+      Navigator.pushNamed(context, AppRoutes.login);
+    } catch (e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('An unknown error occured: $e'),
+        ));
     }
   }
 
@@ -31,23 +49,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
+                controller: controllerFirstName,
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'First Name',
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.name,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Please enter your first name';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  _name = value!;
+                  firstName = value!;
                 },
               ),
               SizedBox(height: 16.0),
               TextFormField(
+                controller: controllerSurname,
+                decoration: InputDecoration(
+                  labelText: 'Surname',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.name,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your surname';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  surname = value!;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: controllerEmail,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
@@ -63,11 +101,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _email = value!;
+                  email = value!;
                 },
               ),
               SizedBox(height: 16.0),
               TextFormField(
+                controller: controllerPassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
@@ -83,32 +122,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _password = value!;
-                },
-              ),
-              SizedBox(height: 24.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Repeat Password',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value != _password) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
+                  password = value!;
                 },
               ),
               SizedBox(height: 24.0),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    _login();
+                    register();
                   }
                 },
-                child: Text('Register'),
+                child: const Text('Register'),
               ),
             ],
           ),
