@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class Overview extends StatelessWidget {
+class Overview extends StatefulWidget{
+  @override
+  _OverviewState createState() => _OverviewState();
+}
+
+class _OverviewState extends State<Overview> {
+
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,23 +20,32 @@ class Overview extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Card(
-              elevation: 5,
-              child: ListTile(
-                title: Text('Next Medication Reminder'),
-                subtitle: Text('8:00 AM - 01/22/2025'),
-                trailing: Icon(Icons.alarm),
+            TableCalendar(
+              focusedDay: _focusedDay, 
+              firstDay: DateTime.utc(2023, 1, 1), 
+              lastDay: DateTime.utc(2033, 12, 31),
+              calendarFormat: _calendarFormat,
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay){
+                setState((){
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              },
+              onFormatChanged: (format){
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay){
+                _focusedDay = focusedDay;
+              },
               ),
-            ),
-            SizedBox(height: 20),
-            Card(
-              elevation: 5,
-              child: ListTile(
-                title: Text('Recent Journal Entry'),
-                subtitle: Text('Had a slight headache in the morning.'),
-                trailing: Icon(Icons.book),
-              ),
-            ),
+              SizedBox(height: 20),
           ],
         ),
       ),
