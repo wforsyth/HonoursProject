@@ -46,6 +46,27 @@ class Auth {
     }
   }
 
+  Future<Map<String, String>> getUserName() async {
+    try{
+      String uid = _firebaseAuth.currentUser!.uid;
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists){
+        String firstName = userDoc['firstName'];
+        String surname = userDoc['surname'];
+
+        return{
+          'firstName': firstName,
+          'surname': surname,
+        };
+      } else {
+        throw Exception('User not found in Firestore');
+      }
+    } catch (e){
+      throw Exception('Error fetching user name: $e');
+    }
+  }
+
   Future<void> signOut() async{
     await _firebaseAuth.signOut();
   }

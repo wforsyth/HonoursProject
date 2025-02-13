@@ -22,12 +22,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  String? _firstName;
+  String? _surname;
 
   final List<Widget> _screens = [
     Overview(),
     MedicationReminder(),
     EpilepsyJournal(),
   ];
+
+  Future<void> _fetchUserName() async{
+    Map<String, String> details = await Auth().getUserName();
+    setState((){
+      _firstName = details['firstName'];
+      _surname = details['surname'];
+    });
+  }
+
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -46,11 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: Text('Drawer Header'),
+              child: Text('$_firstName $_surname'),
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
             ),
+            SizedBox(height: 6),
             ListTile(
               title: Text('Logout'),
               onTap: (){
