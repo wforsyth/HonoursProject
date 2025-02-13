@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:honours_project/routes.dart';
 
 class Overview extends StatefulWidget{
   @override
@@ -48,6 +49,13 @@ class _OverviewState extends State<Overview> {
               SizedBox(height: 20),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.medEntry);
+        },
+        child: Icon(Icons.add),
+        tooltip: 'Add Medication',
       ),
     );
   }
