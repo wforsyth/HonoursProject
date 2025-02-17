@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 
 class MedEntry extends StatelessWidget {
+  const MedEntry({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('Medication Entry Page'),
+      appBar: AppBar(
+        title: const Text('Add New'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print('Add journal entry');
-        },
-        child: Icon(Icons.add),
-        tooltip: 'Add Journal Entry',
+      body: Column(
+        children: [
+          Text.rich(
+            TextSpan(
+              children: <TextSpan>[
+                TextSpan(
+                  text: 'Name',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
