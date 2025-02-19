@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'constants.dart';
 
 void main() async {
   await Firebase.initializeApp(
@@ -16,7 +17,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Login',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: kPrimaryColor,
+        scaffoldBackgroundColor: kScaffoldColor,
+
+        appBarTheme: AppBarTheme(
+          backgroundColor: kScaffoldColor,
+          elevation: 0,
+        ),
+        textTheme: TextTheme(
+          headline4: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            color: kTextColor,
+            fontFamily: 'Roboto',
+          ),
+          subtitle2: TextStyle(
+            fontSize: 12,
+            color: kTextColor,
+          )
+        ),
       ),
       initialRoute: AppRoutes.login, 
       routes: AppRoutes.routes,      
