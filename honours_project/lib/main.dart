@@ -24,15 +24,20 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
         textTheme: TextTheme(
-          headline4: TextStyle(
+          headlineMedium: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w900,
             color: kTextColor,
             fontFamily: 'Roboto',
           ),
-          subtitle2: TextStyle(
+          titleSmall: TextStyle(
             fontSize: 12,
             color: kTextColor,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            color: kPrimaryColor,
           ),
         ),
         inputDecorationTheme: const InputDecorationTheme(

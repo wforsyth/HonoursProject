@@ -57,7 +57,7 @@ class _MedEntryState extends State<MedEntry> {
               ),
               style: Theme.of(context)
                   .textTheme
-                  .subtitle2!
+                  .titleSmall!
                   .copyWith(color: kOtherColor),
             ),
             const PanelTitle(
@@ -74,7 +74,7 @@ class _MedEntryState extends State<MedEntry> {
               ),
               style: Theme.of(context)
                   .textTheme
-                  .subtitle2!
+                  .titleSmall!
                   .copyWith(color: kOtherColor),
             ),
             SizedBox(
@@ -84,6 +84,7 @@ class _MedEntryState extends State<MedEntry> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: StreamBuilder(
+                //stream:
                 builder: (context, snapshot) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +96,6 @@ class _MedEntryState extends State<MedEntry> {
                         isSelected:
                             snapshot.data == MedicineType.bottle ? true : false,
                       ),
-              
                       MedicineTypeColumn(
                         medicineType: MedicineType.pill,
                         name: "Pill",
@@ -103,7 +103,6 @@ class _MedEntryState extends State<MedEntry> {
                         isSelected:
                             snapshot.data == MedicineType.bottle ? true : false,
                       ),
-              
                       MedicineTypeColumn(
                         medicineType: MedicineType.syringe,
                         name: "Syringe",
@@ -111,7 +110,6 @@ class _MedEntryState extends State<MedEntry> {
                         isSelected:
                             snapshot.data == MedicineType.bottle ? true : false,
                       ),
-              
                       MedicineTypeColumn(
                         medicineType: MedicineType.other,
                         name: "Other",
@@ -125,8 +123,71 @@ class _MedEntryState extends State<MedEntry> {
                 stream: null,
               ),
             ),
+            const PanelTitle(title: "Interval Selection", isRequired: true),
+            const IntervalSelection(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class IntervalSelection extends StatefulWidget {
+  const IntervalSelection({Key? key}) : super(key: key);
+
+  @override
+  State<IntervalSelection> createState() => _IntervalSelectionState();
+}
+
+class _IntervalSelectionState extends State<IntervalSelection> {
+  final _intervals = [2, 4, 6, 8];
+  var _selected = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Remind me every", style: Theme.of(context).textTheme.titleSmall),
+          DropdownButton(
+            iconEnabledColor: kOtherColor,
+            dropdownColor: kScaffoldColor,
+            itemHeight: 48.0,
+            hint: _selected == 0
+                ? Text(
+                    "Select an interval",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  )
+                : null,
+            elevation: 4,
+            value: _selected == 0 ? null : _selected,
+            items: _intervals.map(
+              (int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(
+                    value.toString(),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: kSecondaryColor,
+                    ),
+                  ),
+                );
+              },
+            ).toList(),
+            onChanged: (newVal) {
+              setState(
+                () {
+                  _selected = newVal!;
+                },
+              );
+            },
+          ),
+          Text(
+            _selected == 1 ? " hour" : "hours",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ],
       ),
     );
   }
@@ -166,7 +227,7 @@ class MedicineTypeColumn extends StatelessWidget {
                 ),
                 child: IconTheme(
                   data: IconThemeData(
-                    size: 90,
+                    size: 80,
                     color: isSelected ? Colors.white : kOtherColor,
                   ),
                   child: iconValue,
@@ -177,7 +238,7 @@ class MedicineTypeColumn extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: Container(
-              width: 40,
+              width: 50,
               height: 40,
               decoration: BoxDecoration(
                 color: isSelected ? kOtherColor : Colors.transparent,
@@ -186,7 +247,7 @@ class MedicineTypeColumn extends StatelessWidget {
               child: Center(
                 child: Text(
                   name,
-                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: isSelected ? Colors.white : kOtherColor,
                       ),
                 ),
