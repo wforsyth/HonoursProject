@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: kScaffoldColor,
-
         appBarTheme: AppBarTheme(
           backgroundColor: kScaffoldColor,
           elevation: 0,
@@ -34,11 +33,26 @@ class MyApp extends StatelessWidget {
           subtitle2: TextStyle(
             fontSize: 12,
             color: kTextColor,
-          )
+          ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: kTextLightColor,
+              width: 0.7,
+            ),
+          ),
+          border: UnderlineInputBorder(
+              borderSide: BorderSide(color: kTextLightColor)),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: kPrimaryColor,
+            ),
+          ),
         ),
       ),
-      initialRoute: AppRoutes.login, 
-      routes: AppRoutes.routes,      
+      initialRoute: AppRoutes.login,
+      routes: AppRoutes.routes,
     );
   }
 }
