@@ -13,7 +13,8 @@ class Auth {
     required String email,
     required String password,
   }) async {
-    await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
   }
 
   Future<void> createUserWithEmailAndPassword({
@@ -22,16 +23,18 @@ class Auth {
     required String email,
     required String password,
   }) async {
-    try{
-      List<String> signInMethods = await _firebaseAuth.fetchSignInMethodsForEmail(email);
+    try {
+      List<String> signInMethods =
+          await _firebaseAuth.fetchSignInMethodsForEmail(email);
 
-      if(signInMethods.isNotEmpty){
+      if (signInMethods.isNotEmpty) {
         throw FirebaseAuthException(
-          code: 'email-already-in-use',
-          message: 'Email address in use by another account');
+            code: 'email-already-in-use',
+            message: 'Email address in use by another account');
       }
-      
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+
+      UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
 
       String uid = userCredential.user!.uid;
 
@@ -41,33 +44,55 @@ class Auth {
         'email': email,
         'medication': {}
       });
-    } catch (e){
+    } catch (e) {
       throw Exception('Error creating user: $e');
     }
   }
 
-  Future<Map<String, String>> getUserName() async {
-    try{
+  Future<void> createReminder({
+    required String medicineName,
+    required String dosage,
+    required String reminderTime,
+  }) async {
+    try {
       String uid = _firebaseAuth.currentUser!.uid;
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+      Map<String, dynamic> eventData = {
+        'medicineName': medicineName,
+        'dosage': dosage,
+        'reminderTime': reminderTime,
+      };
 
-      if (userDoc.exists){
+      await _firestore.collection('users').doc(uid).update({
+        'medication': FieldValue.arrayUnion([eventData]),
+      });
+    } catch (e) {
+      throw Exception('Error creating event: $e');
+    }
+  }
+
+  Future<Map<String, String>> getUserName() async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
         String firstName = userDoc['firstName'];
         String surname = userDoc['surname'];
 
-        return{
+        return {
           'firstName': firstName,
           'surname': surname,
         };
       } else {
         throw Exception('User not found in Firestore');
       }
-    } catch (e){
+    } catch (e) {
       throw Exception('Error fetching user name: $e');
     }
   }
 
-  Future<void> signOut() async{
+  Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
 }

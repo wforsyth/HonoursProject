@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../models/medicine_type.dart';
+import '../auth.dart';
 
 class MedEntry extends StatefulWidget {
   const MedEntry({Key? key}) : super(key: key);
@@ -14,6 +15,8 @@ class _MedEntryState extends State<MedEntry> {
   late TextEditingController dosageController;
 
   late GlobalKey<ScaffoldState> _scaffoldKey;
+
+  TimeOfDay? _reminderTime;
 
   @override
   void dispose() {
@@ -29,6 +32,18 @@ class _MedEntryState extends State<MedEntry> {
     dosageController = TextEditingController();
 
     _scaffoldKey = GlobalKey<ScaffoldState>();
+  }
+
+  Future<void> _selectReminderTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTime ?? TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _reminderTime = picked;
+      });
+    }
   }
 
   @override
@@ -125,6 +140,24 @@ class _MedEntryState extends State<MedEntry> {
             ),
             const PanelTitle(title: "Interval Selection", isRequired: true),
             const IntervalSelection(),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _selectReminderTime,
+              child: Text(_reminderTime == null
+                  ? 'Select Reminder Time'
+                  : 'Reminder: ${_reminderTime!.format(context)}'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async{
+                await Auth().createReminder(
+                  medicineName: nameController.text,
+                  dosage: dosageController.text,
+                  reminderTime: _reminderTime!.format(context),
+                );
+              },
+              child: const Text('Create Reminder'),
+            )
           ],
         ),
       ),
@@ -149,7 +182,8 @@ class _IntervalSelectionState extends State<IntervalSelection> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Remind me every", style: Theme.of(context).textTheme.titleSmall),
+          Text("Remind me every",
+              style: Theme.of(context).textTheme.titleSmall),
           DropdownButton(
             iconEnabledColor: kOtherColor,
             dropdownColor: kScaffoldColor,
@@ -169,8 +203,8 @@ class _IntervalSelectionState extends State<IntervalSelection> {
                   child: Text(
                     value.toString(),
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: kSecondaryColor,
-                    ),
+                          color: kSecondaryColor,
+                        ),
                   ),
                 );
               },
