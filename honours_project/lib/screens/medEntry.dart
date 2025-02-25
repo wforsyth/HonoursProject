@@ -52,9 +52,10 @@ class _MedEntryState extends State<MedEntry> {
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Add New'),
+        title: const Text('Add Reminder'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+        child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,25 +142,38 @@ class _MedEntryState extends State<MedEntry> {
             const PanelTitle(title: "Interval Selection", isRequired: true),
             const IntervalSelection(),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _selectReminderTime,
-              child: Text(_reminderTime == null
-                  ? 'Select Reminder Time'
-                  : 'Reminder: ${_reminderTime!.format(context)}'),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(8.0),
+                  backgroundColor: kOtherColor,
+                ),
+                onPressed: _selectReminderTime,
+                child: Text(_reminderTime == null
+                    ? 'Select Reminder Time'
+                    : 'Reminder: ${_reminderTime!.format(context)}'),
+              ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async{
-                await Auth().createReminder(
-                  medicineName: nameController.text,
-                  dosage: dosageController.text,
-                  reminderTime: _reminderTime!.format(context),
-                );
-              },
-              child: const Text('Create Reminder'),
-            )
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(8.0),
+                  backgroundColor: kOtherColor,
+                ),
+                onPressed: () async {
+                  await Auth().createReminder(
+                    medicineName: nameController.text,
+                    dosage: dosageController.text,
+                    reminderTime: _reminderTime!.format(context),
+                  );
+                },
+                child: const Text('Create Reminder'),
+              ),
+            ),
           ],
         ),
+      ),
       ),
     );
   }
