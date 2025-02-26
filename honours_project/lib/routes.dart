@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/home.dart';
-import 'screens/medicationReminder.dart';
+import 'screens/stats.dart';
 import 'screens/epilepsyJournal.dart';
 import 'screens/overview.dart';
 import 'screens/medEntry.dart';
@@ -11,7 +11,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String home = '/home';
-  static const String medicationReminder= '/medicationReminder';
+  static const String stats= '/stats';
   static const String epilepsyJournal= '/epilepsyJournal';
   static const String overview = '/overview';
   static const String medEntry = '/medEntry';
@@ -20,7 +20,7 @@ class AppRoutes {
     login: (context) => LoginScreen(),
     register: (context) => RegisterScreen(),
     home: (context) => HomeScreen(),
-    medicationReminder: (context) => MedicationReminder(),
+    stats: (context) => Stats(),
     epilepsyJournal: (context) => EpilepsyJournal(),
     overview: (context) => Overview(),
     medEntry: (context) => MedEntry(),

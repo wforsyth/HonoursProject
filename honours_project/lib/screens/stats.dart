@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class MedicationReminder extends StatelessWidget {
+class Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Medication Reminder Page'),
+        child: Text('Analytics Page'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

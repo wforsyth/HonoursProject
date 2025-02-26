@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'medicationReminder.dart'; 
+import 'package:honours_project/routes.dart';
+import 'stats.dart'; 
 import 'epilepsyJournal.dart'; 
 import 'overview.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     Overview(),
-    MedicationReminder(),
     EpilepsyJournal(),
+    Stats(),
   ];
 
   Future<void> _fetchUserName() async{
@@ -72,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: (){
                 widget.signOut();
                 Navigator.of(context).pop();
+                Navigator.pushNamed(context, AppRoutes.login);
               },
             ),
           ]
@@ -84,15 +86,15 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Overview',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.alarm),
-            label: 'Reminders',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Journal',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_chart_rounded),
+            label: 'Analytics',
           ),
         ],
       ),

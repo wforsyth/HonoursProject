@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../models/medicine_type.dart';
 import '../auth.dart';
+import '../routes.dart';
 
 class MedEntry extends StatefulWidget {
   const MedEntry({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class _MedEntryState extends State<MedEntry> {
   late GlobalKey<ScaffoldState> _scaffoldKey;
 
   TimeOfDay? _reminderTime;
+  DateTime? _reminderStartDate;
 
   @override
   void dispose() {
@@ -34,13 +36,24 @@ class _MedEntryState extends State<MedEntry> {
     _scaffoldKey = GlobalKey<ScaffoldState>();
   }
 
-  Future<void> _selectReminderTime() async {
+  Future<void> _selectReminderDetails() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _reminderStartDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 365)),
+    );
+
+    if (pickedDate == null) return; 
+
+
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _reminderTime ?? TimeOfDay.now(),
     );
     if (picked != null) {
       setState(() {
+        _reminderStartDate = pickedDate;
         _reminderTime = picked;
       });
     }
@@ -56,124 +69,132 @@ class _MedEntryState extends State<MedEntry> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const PanelTitle(
-              title: 'Medicine Name',
-              isRequired: true,
-            ),
-            TextFormField(
-              maxLength: 12,
-              controller: nameController,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const PanelTitle(
+                title: 'Medicine Name',
+                isRequired: true,
               ),
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall!
-                  .copyWith(color: kOtherColor),
-            ),
-            const PanelTitle(
-              title: 'Dosage in mg',
-              isRequired: true,
-            ),
-            TextFormField(
-              maxLength: 12,
-              controller: dosageController,
-              textCapitalization: TextCapitalization.words,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-              ),
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall!
-                  .copyWith(color: kOtherColor),
-            ),
-            SizedBox(
-              height: 2.0,
-            ),
-            const PanelTitle(title: 'Medicine Type', isRequired: false),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: StreamBuilder(
-                //stream:
-                builder: (context, snapshot) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      MedicineTypeColumn(
-                        medicineType: MedicineType.bottle,
-                        name: "Bottle",
-                        iconValue: Icon(Icons.medication),
-                        isSelected:
-                            snapshot.data == MedicineType.bottle ? true : false,
-                      ),
-                      MedicineTypeColumn(
-                        medicineType: MedicineType.pill,
-                        name: "Pill",
-                        iconValue: Icon(Icons.pie_chart),
-                        isSelected:
-                            snapshot.data == MedicineType.bottle ? true : false,
-                      ),
-                      MedicineTypeColumn(
-                        medicineType: MedicineType.syringe,
-                        name: "Syringe",
-                        iconValue: Icon(Icons.medical_services),
-                        isSelected:
-                            snapshot.data == MedicineType.bottle ? true : false,
-                      ),
-                      MedicineTypeColumn(
-                        medicineType: MedicineType.other,
-                        name: "Other",
-                        iconValue: Icon(Icons.question_mark),
-                        isSelected:
-                            snapshot.data == MedicineType.bottle ? true : false,
-                      ),
-                    ],
-                  );
-                },
-                stream: null,
-              ),
-            ),
-            const PanelTitle(title: "Interval Selection", isRequired: true),
-            const IntervalSelection(),
-            const SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(8.0),
-                  backgroundColor: kOtherColor,
+              TextFormField(
+                maxLength: 12,
+                controller: nameController,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
                 ),
-                onPressed: _selectReminderTime,
-                child: Text(_reminderTime == null
-                    ? 'Select Reminder Time'
-                    : 'Reminder: ${_reminderTime!.format(context)}'),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: kOtherColor),
               ),
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(8.0),
-                  backgroundColor: kOtherColor,
+              const PanelTitle(
+                title: 'Dosage in mg',
+                isRequired: true,
+              ),
+              TextFormField(
+                maxLength: 12,
+                controller: dosageController,
+                textCapitalization: TextCapitalization.words,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
                 ),
-                onPressed: () async {
-                  await Auth().createReminder(
-                    medicineName: nameController.text,
-                    dosage: dosageController.text,
-                    reminderTime: _reminderTime!.format(context),
-                  );
-                },
-                child: const Text('Create Reminder'),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: kOtherColor),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 2.0,
+              ),
+              const PanelTitle(title: 'Medicine Type', isRequired: false),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: StreamBuilder(
+                  //stream:
+                  builder: (context, snapshot) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MedicineTypeColumn(
+                          medicineType: MedicineType.bottle,
+                          name: "Bottle",
+                          iconValue: Icon(Icons.medication),
+                          isSelected: snapshot.data == MedicineType.bottle
+                              ? true
+                              : false,
+                        ),
+                        MedicineTypeColumn(
+                          medicineType: MedicineType.pill,
+                          name: "Pill",
+                          iconValue: Icon(Icons.pie_chart),
+                          isSelected: snapshot.data == MedicineType.bottle
+                              ? true
+                              : false,
+                        ),
+                        MedicineTypeColumn(
+                          medicineType: MedicineType.syringe,
+                          name: "Syringe",
+                          iconValue: Icon(Icons.medical_services),
+                          isSelected: snapshot.data == MedicineType.bottle
+                              ? true
+                              : false,
+                        ),
+                        MedicineTypeColumn(
+                          medicineType: MedicineType.other,
+                          name: "Other",
+                          iconValue: Icon(Icons.question_mark),
+                          isSelected: snapshot.data == MedicineType.bottle
+                              ? true
+                              : false,
+                        ),
+                      ],
+                    );
+                  },
+                  stream: null,
+                ),
+              ),
+              const PanelTitle(title: "Interval Selection", isRequired: true),
+              const IntervalSelection(),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(8.0),
+                    backgroundColor: kOtherColor,
+                  ),
+                  onPressed: _selectReminderDetails,
+                  child: Text(_reminderTime == null
+                      ? 'Select Reminder Time'
+                      : 'Reminder: ${_reminderStartDate!.toLocal().toString().split(' ')[0]} ${_reminderTime!.format(context)}'),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(8.0),
+                    backgroundColor: kOtherColor,
+                  ),
+                  onPressed: () async {
+                    await Auth().createReminder(
+                      medicineName: nameController.text,
+                      dosage: dosageController.text,
+                      reminderTime: _reminderTime!.format(context),
+                      reminderDate: _reminderStartDate!.toLocal().toString().split(' ')[0],
+                      duration: "",
+                    );
+
+                    Navigator.pushNamed(context, AppRoutes.home);
+                  },
+                  child: const Text('Create Reminder'),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
