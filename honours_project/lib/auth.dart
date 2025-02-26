@@ -45,7 +45,8 @@ class Auth {
         'firstName': firstName,
         'surname': surname,
         'email': email,
-        'reminders': []
+        'reminders': [],
+        'journalEntries': [],
       });
     } catch (e) {
       throw Exception('Error creating user: $e');
@@ -81,6 +82,46 @@ class Auth {
     }
   }
 
+  //Updates reminders object variable in database with relevant information
+  Future<void> createJournalEntry({
+    required String time,
+    required String date,
+    required String description,
+  }) async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      Map<String, dynamic> eventData = {
+        'time': time,
+        'date': date,
+        'description': description,
+      };
+
+      await _firestore.collection('users').doc(uid).update({
+        'journalEntries': FieldValue.arrayUnion([eventData]),
+      });
+    } catch (e) {
+      throw Exception('Error creating journal entry: $e');
+    }
+  }
+
+  //Gets entries from journalEntries object to be displayed in calendar
+  Future<List<Map<String, dynamic>>> getJournalEntries() async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
+        List<dynamic> entries = userDoc['journalEntries'];
+        return entries.cast<Map<String, dynamic>>();
+      } else {
+        throw Exception('User not found in database');
+      }
+    } catch (e) {
+      throw Exception('Error fetching entries: $e');
+    }
+  }
+
 //Gets the usernames of users to display when signed in
   Future<Map<String, String>> getUserName() async {
     try {
@@ -105,23 +146,24 @@ class Auth {
   }
 
 //Gets reminders from reminders object to be displayed in calendar
-  Future <List<Map<String, dynamic>>> getReminders() async{
-    try{
+  Future<List<Map<String, dynamic>>> getReminders() async {
+    try {
       String uid = _firebaseAuth.currentUser!.uid;
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
 
-      if(userDoc.exists){
+      if (userDoc.exists) {
         List<dynamic> reminders = userDoc['reminders'];
         return reminders.cast<Map<String, dynamic>>();
-      } else{
+      } else {
         throw Exception('User not found in database');
       }
-    } catch(e){
+    } catch (e) {
       throw Exception('Error fetching reminders: $e');
     }
   }
 
-//signs user out 
+//signs user out
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }

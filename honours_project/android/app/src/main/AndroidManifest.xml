@@ -5,6 +5,7 @@
         android:label="honours_project"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <uses-permission android:name="android.permission.VIBRATE" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
