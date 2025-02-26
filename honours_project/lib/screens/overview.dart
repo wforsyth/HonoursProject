@@ -16,7 +16,7 @@ class _OverviewState extends State<Overview> {
   Map<DateTime, List<Map<String, dynamic>>> selectedEvents = {};
   final Auth _auth = Auth();
 
-  DateTime normaliseToDay(DateTime dateTime){
+  DateTime normaliseToDay(DateTime dateTime) {
     return DateTime(dateTime.year, dateTime.month, dateTime.day);
   }
 
@@ -29,16 +29,13 @@ class _OverviewState extends State<Overview> {
       for (var reminder in reminders) {
         String reminderDateString = reminder['reminderDate'];
         DateTime reminderDate = DateTime.parse(reminderDateString);
-
         DateTime normalisedReminderDate = normaliseToDay(reminderDate);
 
-        if (selectedEvents[normalisedReminderDate] == null){
+        if (selectedEvents[normalisedReminderDate] == null) {
           selectedEvents[normalisedReminderDate] = [];
-        } 
-
+        }
         selectedEvents[normalisedReminderDate]!.add(reminder);
       }
-
       setState(() {});
     } catch (e) {
       print('Error getting reminders $e');
@@ -101,7 +98,15 @@ class _OverviewState extends State<Overview> {
                         return Card(
                           child: ListTile(
                             title: Text(event['medicineName']),
-                            subtitle: Text('Dosage: ${event['dosage']} mg'),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Dosage: ${event['dosage']} mg'),
+                                Text('Medicine Type: ${event['medicineType']}'),
+                                Text('Reminder Date: ${event['reminderDate']}'),
+                                Text('Reminder Time: ${event['reminderTime']}'),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -119,7 +124,7 @@ class _OverviewState extends State<Overview> {
           });
         },
         child: Icon(Icons.add),
-        tooltip: 'Add Medication',
+        tooltip: 'Add Medication Reminder',
       ),
     );
   }

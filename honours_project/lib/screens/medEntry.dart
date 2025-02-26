@@ -14,11 +14,11 @@ class MedEntry extends StatefulWidget {
 class _MedEntryState extends State<MedEntry> {
   late TextEditingController nameController;
   late TextEditingController dosageController;
-
   late GlobalKey<ScaffoldState> _scaffoldKey;
-
   TimeOfDay? _reminderTime;
   DateTime? _reminderStartDate;
+  MedicineType? _selectedMedicineType;
+  int _selectedDuration = 0;
 
   @override
   void dispose() {
@@ -44,8 +44,7 @@ class _MedEntryState extends State<MedEntry> {
       lastDate: DateTime.now().add(Duration(days: 365)),
     );
 
-    if (pickedDate == null) return; 
-
+    if (pickedDate == null) return;
 
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -111,53 +110,64 @@ class _MedEntryState extends State<MedEntry> {
               ),
               const PanelTitle(title: 'Medicine Type', isRequired: false),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder(
-                  //stream:
-                  builder: (context, snapshot) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MedicineTypeColumn(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      MedicineTypeColumn(
                           medicineType: MedicineType.bottle,
                           name: "Bottle",
                           iconValue: Icon(Icons.medication),
-                          isSelected: snapshot.data == MedicineType.bottle
-                              ? true
-                              : false,
-                        ),
-                        MedicineTypeColumn(
-                          medicineType: MedicineType.pill,
-                          name: "Pill",
-                          iconValue: Icon(Icons.pie_chart),
-                          isSelected: snapshot.data == MedicineType.bottle
-                              ? true
-                              : false,
-                        ),
-                        MedicineTypeColumn(
-                          medicineType: MedicineType.syringe,
-                          name: "Syringe",
-                          iconValue: Icon(Icons.medical_services),
-                          isSelected: snapshot.data == MedicineType.bottle
-                              ? true
-                              : false,
-                        ),
-                        MedicineTypeColumn(
-                          medicineType: MedicineType.other,
-                          name: "Other",
-                          iconValue: Icon(Icons.question_mark),
-                          isSelected: snapshot.data == MedicineType.bottle
-                              ? true
-                              : false,
-                        ),
-                      ],
-                    );
-                  },
-                  stream: null,
-                ),
-              ),
+                          isSelected:
+                              _selectedMedicineType == MedicineType.bottle,
+                          onTap: () {
+                            setState(() {
+                              _selectedMedicineType = MedicineType.bottle;
+                            });
+                          }),
+                      MedicineTypeColumn(
+                        medicineType: MedicineType.pill,
+                        name: "Pill",
+                        iconValue: Icon(Icons.pie_chart),
+                        isSelected: _selectedMedicineType == MedicineType.pill,
+                        onTap: () {
+                          setState(() {
+                            _selectedMedicineType = MedicineType.pill;
+                          });
+                        },
+                      ),
+                      MedicineTypeColumn(
+                        medicineType: MedicineType.syringe,
+                        name: "Syringe",
+                        iconValue: Icon(Icons.medical_services),
+                        isSelected:
+                            _selectedMedicineType == MedicineType.syringe,
+                        onTap: () {
+                          setState(() {
+                            _selectedMedicineType = MedicineType.syringe;
+                          });
+                        },
+                      ),
+                      MedicineTypeColumn(
+                        medicineType: MedicineType.other,
+                        name: "Other",
+                        iconValue: Icon(Icons.question_mark),
+                        isSelected: _selectedMedicineType == MedicineType.other,
+                        onTap: () {
+                          setState(() {
+                            _selectedMedicineType = MedicineType.other;
+                          });
+                        },
+                      ),
+                    ],
+                  )),
               const PanelTitle(title: "Interval Selection", isRequired: true),
               const IntervalSelection(),
+              DurationSelection(onDurationSelected: (duration) {
+                setState(() {
+                  _selectedDuration = duration;
+                });
+              }),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
@@ -179,13 +189,20 @@ class _MedEntryState extends State<MedEntry> {
                     backgroundColor: kOtherColor,
                   ),
                   onPressed: () async {
-                    await Auth().createReminder(
-                      medicineName: nameController.text,
-                      dosage: dosageController.text,
-                      reminderTime: _reminderTime!.format(context),
-                      reminderDate: _reminderStartDate!.toLocal().toString().split(' ')[0],
-                      duration: "",
-                    );
+                    for (int i = 0; i < _selectedDuration; i++) {
+                      DateTime reminderDate =
+                          _reminderStartDate!.add(Duration(days: i));
+
+                      await Auth().createReminder(
+                        medicineName: nameController.text,
+                        medicineType: _selectedMedicineType!,
+                        dosage: dosageController.text,
+                        reminderTime: _reminderTime!.format(context),
+                        reminderDate:
+                            reminderDate.toLocal().toString().split(' ')[0],
+                        duration: _selectedDuration.toString(),
+                      );
+                    }
 
                     Navigator.pushNamed(context, AppRoutes.home);
                   },
@@ -205,6 +222,71 @@ class IntervalSelection extends StatefulWidget {
 
   @override
   State<IntervalSelection> createState() => _IntervalSelectionState();
+}
+
+class DurationSelection extends StatefulWidget {
+  final Function(int) onDurationSelected;
+  const DurationSelection({Key? key, required this.onDurationSelected})
+      : super(key: key);
+
+  @override
+  State<DurationSelection> createState() => _DurationSelectionState();
+}
+
+class _DurationSelectionState extends State<DurationSelection> {
+  final _intervals = [1, 7, 14, 30];
+  var _selected = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Medication to be taken for",
+              style: Theme.of(context).textTheme.titleSmall),
+          DropdownButton(
+            iconEnabledColor: kOtherColor,
+            dropdownColor: kScaffoldColor,
+            itemHeight: 48.0,
+            hint: _selected == 0
+                ? Text(
+                    "Select a Duration",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  )
+                : null,
+            elevation: 4,
+            value: _selected == 0 ? null : _selected,
+            items: _intervals.map(
+              (int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(
+                    value.toString(),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: kSecondaryColor,
+                        ),
+                  ),
+                );
+              },
+            ).toList(),
+            onChanged: (newVal) {
+              setState(
+                () {
+                  _selected = newVal!;
+                },
+              );
+              widget.onDurationSelected(_selected);
+            },
+          ),
+          Text(
+            _selected == 1 ? " day" : "days",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _IntervalSelectionState extends State<IntervalSelection> {
@@ -268,17 +350,19 @@ class MedicineTypeColumn extends StatelessWidget {
       required this.medicineType,
       required this.name,
       required this.iconValue,
-      required this.isSelected})
+      required this.isSelected,
+      required this.onTap})
       : super(key: key);
   final MedicineType medicineType;
   final String name;
   final Icon iconValue;
   final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Column(
         children: [
           Container(

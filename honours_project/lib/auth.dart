@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:honours_project/models/medicine_type.dart';
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -54,6 +55,7 @@ class Auth {
 //Updates reminders object variable in database with relevant information
   Future<void> createReminder({
     required String medicineName,
+    required MedicineType medicineType,
     required String dosage,
     required String reminderTime,
     required String reminderDate,
@@ -61,8 +63,10 @@ class Auth {
   }) async {
     try {
       String uid = _firebaseAuth.currentUser!.uid;
+      String medicineTypeString = medicineType.toString().split('.').last;
       Map<String, dynamic> eventData = {
         'medicineName': medicineName,
+        'medicineType': medicineTypeString,
         'dosage': dosage,
         'reminderTime': reminderTime,
         'reminderDate': reminderDate,
