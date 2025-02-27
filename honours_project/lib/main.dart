@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:honours_project/api/firebase_api.dart';
 import 'routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -9,6 +10,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseInitService().initialize();
+  await FirebaseInitService().initNotifications();
   runApp(MyApp());
 }
 
