@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:honours_project/models/medicine_type.dart';
+import 'package:uuid/uuid.dart';
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -66,7 +67,9 @@ class Auth {
     try {
       String uid = _firebaseAuth.currentUser!.uid;
       String medicineTypeString = medicineType.toString().split('.').last;
+      String reminderId = Uuid().v4();
       Map<String, dynamic> eventData = {
+        'reminderId': reminderId,
         'medicineName': medicineName,
         'medicineType': medicineTypeString,
         'dosage': dosage,
@@ -162,6 +165,18 @@ class Auth {
       }
     } catch (e) {
       throw Exception('Error fetching reminders: $e');
+    }
+  }
+
+  Future<void> deleteReminder(String reminderId) async{
+    try{
+      String uid = _firebaseAuth.currentUser!.uid;
+
+      await _firestore.collection('users').doc(uid).update({
+        'reminders': FieldValue.arrayRemove([{'reminderId': reminderId}]),
+      });
+    } catch(e){
+      throw Exception('Error removing reminder: $e');
     }
   }
 

@@ -107,6 +107,16 @@ class _OverviewState extends State<Overview> {
                                 Text('Reminder Time: ${event['reminderTime']}'),
                               ],
                             ),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: (){
+                                String reminderId = event['reminderId'];
+                                _auth.deleteReminder(reminderId).then((_){
+                                  setState(() {
+                                    _fetchReminders();
+                                  });
+                                });
+                              },)
                           ),
                         );
                       },
