@@ -2,6 +2,7 @@
     package="com.honoursproject.epialarm">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     
     <application
         android:label="honours_project"

@@ -60,6 +60,7 @@ class Auth {
     required String dosage,
     required String reminderTime,
     required String reminderDate,
+    required String interval,
     required String duration,
   }) async {
     try {
@@ -71,6 +72,7 @@ class Auth {
         'dosage': dosage,
         'reminderTime': reminderTime,
         'reminderDate': reminderDate,
+        'interval': interval,
         'duration': duration,
       };
 

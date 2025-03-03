@@ -3,6 +3,7 @@ import '../constants.dart';
 import '../models/medicine_type.dart';
 import '../auth.dart';
 import '../routes.dart';
+import '../notifications/notificationService.dart';
 
 class MedEntry extends StatefulWidget {
   const MedEntry({Key? key}) : super(key: key);
@@ -19,6 +20,9 @@ class _MedEntryState extends State<MedEntry> {
   DateTime? _reminderStartDate;
   MedicineType? _selectedMedicineType;
   int _selectedDuration = 0;
+  int _selectedInterval = 0;
+
+  final NotificationService _notificationService = NotificationService();
 
   @override
   void dispose() {
@@ -34,6 +38,8 @@ class _MedEntryState extends State<MedEntry> {
     dosageController = TextEditingController();
 
     _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    _notificationService.initialiseNotifications();
   }
 
   Future<void> _selectReminderDetails() async {
@@ -162,7 +168,11 @@ class _MedEntryState extends State<MedEntry> {
                     ],
                   )),
               const PanelTitle(title: "Interval Selection", isRequired: true),
-              const IntervalSelection(),
+              IntervalSelection(onIntervalSelected: (interval) {
+                setState(() {
+                  _selectedInterval = interval;
+                });
+              }),
               DurationSelection(onDurationSelected: (duration) {
                 setState(() {
                   _selectedDuration = duration;
@@ -192,6 +202,29 @@ class _MedEntryState extends State<MedEntry> {
                     for (int i = 0; i < _selectedDuration; i++) {
                       DateTime reminderDate =
                           _reminderStartDate!.add(Duration(days: i));
+                      DateTime reminderDateTime = DateTime(
+                          _reminderStartDate!.year,
+                          _reminderStartDate!.month,
+                          _reminderStartDate!.day,
+                          _reminderTime!.hour,
+                          _reminderTime!.minute);
+
+                      await _notificationService.scheduleNotification(
+                        reminderDateTime,
+                        'Medication Reminder',
+                        'Time to take your medication!',
+                      );
+
+                      if (_selectedInterval > 0) {
+                        Duration interval = Duration(hours: _selectedDuration);
+                        await _notificationService
+                            .scheduleRecurringNotification(
+                          reminderDateTime,
+                          'Medication Reminder',
+                          'Time to take your medication!',
+                          interval,
+                        );
+                      }
 
                       await Auth().createReminder(
                         medicineName: nameController.text,
@@ -200,6 +233,7 @@ class _MedEntryState extends State<MedEntry> {
                         reminderTime: _reminderTime!.format(context),
                         reminderDate:
                             reminderDate.toLocal().toString().split(' ')[0],
+                        interval: _selectedInterval.toString(),
                         duration: _selectedDuration.toString(),
                       );
                     }
@@ -218,7 +252,9 @@ class _MedEntryState extends State<MedEntry> {
 }
 
 class IntervalSelection extends StatefulWidget {
-  const IntervalSelection({Key? key}) : super(key: key);
+  final Function(int) onIntervalSelected;
+  const IntervalSelection({Key? key, required this.onIntervalSelected})
+      : super(key: key);
 
   @override
   State<IntervalSelection> createState() => _IntervalSelectionState();

@@ -4,28 +4,51 @@ import 'routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'constants.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async{
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message: ${message.messageId}');
 }
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('Europe/London'));
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message){
+  const AndroidInitializationSettings initialisationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  const InitializationSettings initialisationSettings = InitializationSettings(
+    android: initialisationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initialisationSettings,
+      onSelectNotification: (String? payload) async {
+    if (payload != null) {
+      print('Notification payload: $payload');
+    }
+  });
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Received foreground message: ${message.notification?.title}');
 
-    if(message.notification != null){
+    if (message.notification != null) {
       print('Notification Title: ${message.notification?.title}');
       print('Notification Body: ${message.notification?.body}');
     }
   });
-  
+
   await FirebaseInitService().initialize();
   runApp(MyApp());
 }
