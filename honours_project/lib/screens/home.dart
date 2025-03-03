@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:honours_project/routes.dart';
+import 'package:honours_project/screens/emergencyContact.dart';
 import 'stats.dart'; 
 import 'epilepsyJournal.dart'; 
 import 'overview.dart'; 
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Overview(),
     EpilepsyJournal(),
     Stats(),
+    EmergencyContact(),
   ];
 
   Future<void> _fetchUserName() async{
@@ -94,6 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_chart_rounded),
+            label: 'Analytics',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.contact_emergency),
             label: 'Analytics',
           ),
         ],
