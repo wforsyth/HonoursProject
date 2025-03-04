@@ -168,14 +168,31 @@ class Auth {
     }
   }
 
-  Future<void> deleteReminder(String reminderId) async{
-    try{
+//Function to delete reminder from firestore database
+  Future<void> deleteReminder(String reminderId) async {
+    try {
       String uid = _firebaseAuth.currentUser!.uid;
 
-      await _firestore.collection('users').doc(uid).update({
-        'reminders': FieldValue.arrayRemove([{'reminderId': reminderId}]),
-      });
-    } catch(e){
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+      List<dynamic> reminders = userDoc['reminders'];
+
+      Map<String, dynamic>? deleteReminder;
+      for (var reminder in reminders) {
+        if (reminder['reminderId'] == reminderId) {
+          deleteReminder = reminder;
+          break;
+        }
+      }
+
+      if (deleteReminder != null) {
+        await _firestore.collection('users').doc(uid).update({
+          'reminders': FieldValue.arrayRemove([deleteReminder]),
+        });
+      } else {
+        throw Exception('Reminder not found');
+      }
+    } catch (e) {
       throw Exception('Error removing reminder: $e');
     }
   }

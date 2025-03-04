@@ -97,27 +97,31 @@ class _OverviewState extends State<Overview> {
                         final event = _getEventsForDay(_selectedDay!)[index];
                         return Card(
                           child: ListTile(
-                            title: Text(event['medicineName']),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Dosage: ${event['dosage']} mg'),
-                                Text('Medicine Type: ${event['medicineType']}'),
-                                Text('Reminder Date: ${event['reminderDate']}'),
-                                Text('Reminder Time: ${event['reminderTime']}'),
-                              ],
-                            ),
-                            trailing: IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: (){
-                                String reminderId = event['reminderId'];
-                                _auth.deleteReminder(reminderId).then((_){
-                                  setState(() {
-                                    _fetchReminders();
+                              title: Text(event['medicineName']),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Dosage: ${event['dosage']} mg'),
+                                  Text(
+                                      'Medicine Type: ${event['medicineType']}'),
+                                  Text(
+                                      'Reminder Date: ${event['reminderDate']}'),
+                                  Text(
+                                      'Reminder Time: ${event['reminderTime']}'),
+                                ],
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  String reminderId =
+                                      event['reminderId'].toString();
+                                  _auth.deleteReminder(reminderId).then((_) {
+                                    setState(() {
+                                      _fetchReminders();
+                                    });
                                   });
-                                });
-                              },)
-                          ),
+                                },
+                              )),
                         );
                       },
                     )

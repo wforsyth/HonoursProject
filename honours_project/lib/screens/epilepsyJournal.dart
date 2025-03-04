@@ -56,9 +56,6 @@ class _EpilepsyJournalState extends State<EpilepsyJournal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Epilepsy Journal'),
-      ),
       body: Column(
         children: [
           Expanded(
