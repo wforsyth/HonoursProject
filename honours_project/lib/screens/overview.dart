@@ -47,6 +47,25 @@ class _OverviewState extends State<Overview> {
     return selectedEvents[normalisedDay] ?? [];
   }
 
+  Future<void> _updateReminderStatus(String reminderId, String status) async {
+    try {
+      await _auth.updateReminderStatus(status, reminderId);
+      _fetchReminders();
+    } catch (e) {
+      print('Error logging status: $e');
+    }
+  }
+
+  bool _reminderDue(String reminderTime){
+    DateTime now = DateTime.now();
+    DateTime reminderDateTime = DateTime.parse(reminderTime);
+    return now.isAfter(reminderDateTime);
+  }
+
+  bool _isStatusSet(String status){
+    return status == 'taken' || status =='missed';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -95,33 +114,61 @@ class _OverviewState extends State<Overview> {
                       itemCount: _getEventsForDay(_selectedDay!).length,
                       itemBuilder: (context, index) {
                         final event = _getEventsForDay(_selectedDay!)[index];
+                        String reminderDate = event['reminderDate'];
+                        String reminderTime = event['reminderTime'];
+                        DateTime reminderDateTime = DateTime.parse('$reminderDate $reminderTime');
                         return Card(
                           child: ListTile(
-                              title: Text(event['medicineName']),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Dosage: ${event['dosage']} mg'),
-                                  Text(
-                                      'Medicine Type: ${event['medicineType']}'),
-                                  Text(
-                                      'Reminder Date: ${event['reminderDate']}'),
-                                  Text(
-                                      'Reminder Time: ${event['reminderTime']}'),
-                                ],
-                              ),
-                              trailing: IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () {
-                                  String reminderId =
-                                      event['reminderId'].toString();
-                                  _auth.deleteReminder(reminderId).then((_) {
-                                    setState(() {
-                                      _fetchReminders();
-                                    });
+                            title: Text(event['medicineName']),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Dosage: ${event['dosage']} mg'),
+                                Text('Medicine Type: ${event['medicineType']}'),
+                                Text('Reminder Date: ${event['reminderDate']}'),
+                                Text('Reminder Time: ${event['reminderTime']}'),
+                                if (_reminderDue(reminderDateTime.toIso8601String()) && !_isStatusSet(event['status']))
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _updateReminderStatus(
+                                            event['reminderId'], 'taken');
+                                      },
+                                      child: Text('Taken'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.green,
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _updateReminderStatus(
+                                            event['reminderId'], 'missed');
+                                      },
+                                      child: Text('Missed'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.green,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                String reminderId =
+                                    event['reminderId'].toString();
+                                _auth.deleteReminder(reminderId).then((_) {
+                                  setState(() {
+                                    _fetchReminders();
                                   });
-                                },
-                              )),
+                                });
+                              },
+                            ),
+                          ),
                         );
                       },
                     )

@@ -22,7 +22,6 @@ class FirebaseInitService {
       print('User granted permission: ${settings.authorizationStatus}');
     } on Exception catch (e) {
       print('Error requesting permission: $e');
-      // Handle the error appropriately (e.g., show a message to the user)
     }
   }
 }

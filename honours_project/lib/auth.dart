@@ -68,6 +68,7 @@ class Auth {
       String uid = _firebaseAuth.currentUser!.uid;
       String medicineTypeString = medicineType.toString().split('.').last;
       String reminderId = Uuid().v4();
+      String status = '';
       Map<String, dynamic> eventData = {
         'reminderId': reminderId,
         'medicineName': medicineName,
@@ -77,6 +78,7 @@ class Auth {
         'reminderDate': reminderDate,
         'interval': interval,
         'duration': duration,
+        'status': status
       };
 
       await _firestore.collection('users').doc(uid).update({
@@ -194,6 +196,27 @@ class Auth {
       }
     } catch (e) {
       throw Exception('Error removing reminder: $e');
+    }
+  }
+
+  Future<void> updateReminderStatus(String status, String reminderId) async{
+    try{
+      String uid = _firebaseAuth.currentUser!.uid;
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+      List<dynamic> reminders = userDoc['reminders'];
+
+      for (var reminder in reminders){
+        if (reminder['reminderId'] == reminderId){
+          reminder['status'] = status;
+          break;
+        }
+      }
+
+      await _firestore.collection('users').doc(uid).update({
+        'reminders': reminders,
+      });
+    } catch(e){
+      print('Error updating reminders status: $e');
     }
   }
 
