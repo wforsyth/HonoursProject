@@ -48,6 +48,7 @@ class Auth {
         'email': email,
         'reminders': [],
         'journalEntries': [],
+        'data': {},
       });
     } catch (e) {
       throw Exception('Error creating user: $e');
@@ -199,14 +200,16 @@ class Auth {
     }
   }
 
-  Future<void> updateReminderStatus(String status, String reminderId) async{
-    try{
+//Function to update status variable based on whether medication was taken or not
+  Future<void> updateReminderStatus(String status, String reminderId) async {
+    try {
       String uid = _firebaseAuth.currentUser!.uid;
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
       List<dynamic> reminders = userDoc['reminders'];
 
-      for (var reminder in reminders){
-        if (reminder['reminderId'] == reminderId){
+      for (var reminder in reminders) {
+        if (reminder['reminderId'] == reminderId) {
           reminder['status'] = status;
           break;
         }
@@ -215,8 +218,42 @@ class Auth {
       await _firestore.collection('users').doc(uid).update({
         'reminders': reminders,
       });
-    } catch(e){
+    } catch (e) {
       print('Error updating reminders status: $e');
+    }
+  }
+
+//Function to update missed and taken data in database based on status 
+  Future<void> updateData(bool isTaken) async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      DateTime now = DateTime.now();
+      String month = '${now.month.toString().padLeft(2, '0')} ${now.year}';
+      DocumentReference userDocRef = _firestore.collection('users').doc(uid);
+
+      await _firestore.runTransaction((transaction) async {
+        DocumentSnapshot userSnapshot = await transaction.get(userDocRef);
+
+        if (!userSnapshot.exists) {
+          throw Exception('User document does not exist');
+        }
+
+        Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> medicationData = data['data'] ?? {};
+        Map<String, dynamic> monthData =
+            medicationData[month] ?? {'taken': 0, 'missed': 0};
+
+        if (isTaken) {
+          monthData['taken'] += 1;
+        } else {
+          monthData['missed'] += 1;
+        }
+
+        medicationData[month] = monthData;
+        transaction.update(userDocRef, {'data': medicationData});
+      });
+    } catch (e) {
+      throw Exception('Error updating data: $e');
     }
   }
 

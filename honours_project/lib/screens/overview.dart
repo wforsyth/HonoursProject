@@ -56,6 +56,14 @@ class _OverviewState extends State<Overview> {
     }
   }
 
+  Future<void> _updateData(bool isTaken) async{
+    try{
+      await _auth.updateData(isTaken);
+    } catch (e){
+      print('Error updating data: $e');
+    }
+  }
+
   bool _reminderDue(String reminderTime){
     DateTime now = DateTime.now();
     DateTime reminderDateTime = DateTime.parse(reminderTime);
@@ -136,6 +144,7 @@ class _OverviewState extends State<Overview> {
                                       onPressed: () {
                                         _updateReminderStatus(
                                             event['reminderId'], 'taken');
+                                        _updateData(true);
                                       },
                                       child: Text('Taken'),
                                       style: ElevatedButton.styleFrom(
@@ -146,6 +155,7 @@ class _OverviewState extends State<Overview> {
                                       onPressed: () {
                                         _updateReminderStatus(
                                             event['reminderId'], 'missed');
+                                        _updateData(false);
                                       },
                                       child: Text('Missed'),
                                       style: ElevatedButton.styleFrom(
