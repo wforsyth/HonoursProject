@@ -257,6 +257,28 @@ class Auth {
     }
   }
 
+//Displays users monthly data in pie chart
+  Future<Map<String, double>> getMonthlyData(String month) async{
+    try{
+      String uid = _firebaseAuth.currentUser!.uid;
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists){
+        Map<String, dynamic> data = userDoc['data']?? {};
+        Map<String, dynamic> monthData = data[month]?? {'taken': 0.0, 'missed': 0.0};
+
+        return {
+          'Taken': (monthData['taken'] as int).toDouble(),
+          'Missed': (monthData['missed'] as int).toDouble()
+        };
+      } else{
+        throw Exception('User data not found');
+      }
+    } catch(e){
+      throw Exception('Error fetching monthly data: $e');
+    }
+  }
+
 //signs user out
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
