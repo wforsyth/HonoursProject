@@ -223,7 +223,7 @@ class Auth {
     }
   }
 
-//Function to update missed and taken data in database based on status 
+//Function to update missed and taken data in database based on status
   Future<void> updateData(bool isTaken) async {
     try {
       String uid = _firebaseAuth.currentUser!.uid;
@@ -258,23 +258,33 @@ class Auth {
   }
 
 //Displays users monthly data in pie chart
-  Future<Map<String, double>> getMonthlyData(String month) async{
-    try{
+  Future<Map<String, double>> getMonthlyData(String month) async {
+    try {
       String uid = _firebaseAuth.currentUser!.uid;
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
 
-      if (userDoc.exists){
-        Map<String, dynamic> data = userDoc['data']?? {};
-        Map<String, dynamic> monthData = data[month]?? {'taken': 0.0, 'missed': 0.0};
+      if (userDoc.exists) {
+        Map<String, dynamic> data = userDoc['data'] ?? {};
+        Map<String, dynamic> monthData =
+            data[month] ?? {'taken': 0.0, 'missed': 0.0};
+
+        double taken = (monthData['taken'] is int)
+            ? (monthData['taken'] as int).toDouble()
+            : (monthData['taken'] as double? ?? 0.0);
+
+        double missed = (monthData['missed'] is int)
+            ? (monthData['missed'] as int).toDouble()
+            : (monthData['missed'] as double? ?? 0.0);
 
         return {
-          'Taken': (monthData['taken'] as int).toDouble(),
-          'Missed': (monthData['missed'] as int).toDouble()
+          'Taken': taken,
+          'Missed': missed
         };
-      } else{
+      } else {
         throw Exception('User data not found');
       }
-    } catch(e){
+    } catch (e) {
       throw Exception('Error fetching monthly data: $e');
     }
   }

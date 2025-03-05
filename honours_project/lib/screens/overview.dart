@@ -56,22 +56,22 @@ class _OverviewState extends State<Overview> {
     }
   }
 
-  Future<void> _updateData(bool isTaken) async{
-    try{
+  Future<void> _updateData(bool isTaken) async {
+    try {
       await _auth.updateData(isTaken);
-    } catch (e){
+    } catch (e) {
       print('Error updating data: $e');
     }
   }
 
-  bool _reminderDue(String reminderTime){
+  bool _reminderDue(String reminderTime) {
     DateTime now = DateTime.now();
     DateTime reminderDateTime = DateTime.parse(reminderTime);
     return now.isAfter(reminderDateTime);
   }
 
-  bool _isStatusSet(String status){
-    return status == 'taken' || status =='missed';
+  bool _isStatusSet(String status) {
+    return status == 'taken' || status == 'missed';
   }
 
   @override
@@ -124,7 +124,8 @@ class _OverviewState extends State<Overview> {
                         final event = _getEventsForDay(_selectedDay!)[index];
                         String reminderDate = event['reminderDate'];
                         String reminderTime = event['reminderTime'];
-                        DateTime reminderDateTime = DateTime.parse('$reminderDate $reminderTime');
+                        DateTime reminderDateTime =
+                            DateTime.parse('$reminderDate $reminderTime');
                         return Card(
                           child: ListTile(
                             title: Text(event['medicineName']),
@@ -135,35 +136,37 @@ class _OverviewState extends State<Overview> {
                                 Text('Medicine Type: ${event['medicineType']}'),
                                 Text('Reminder Date: ${event['reminderDate']}'),
                                 Text('Reminder Time: ${event['reminderTime']}'),
-                                if (_reminderDue(reminderDateTime.toIso8601String()) && !_isStatusSet(event['status']))
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _updateReminderStatus(
-                                            event['reminderId'], 'taken');
-                                        _updateData(true);
-                                      },
-                                      child: Text('Taken'),
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Colors.green,
+                                if (_reminderDue(
+                                        reminderDateTime.toIso8601String()) &&
+                                    !_isStatusSet(event['status']))
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          _updateReminderStatus(
+                                              event['reminderId'], 'taken');
+                                          _updateData(true);
+                                        },
+                                        child: Text('Taken'),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.green,
+                                        ),
                                       ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _updateReminderStatus(
-                                            event['reminderId'], 'missed');
-                                        _updateData(false);
-                                      },
-                                      child: Text('Missed'),
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Colors.green,
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          _updateReminderStatus(
+                                              event['reminderId'], 'missed');
+                                          _updateData(false);
+                                        },
+                                        child: Text('Missed'),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.green,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                )
+                                    ],
+                                  )
                               ],
                             ),
                             trailing: IconButton(

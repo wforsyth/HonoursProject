@@ -1,4 +1,3 @@
-// stats.dart
 import 'package:flutter/material.dart';
 import '../pieChart.dart';
 import '../auth.dart';
@@ -10,7 +9,7 @@ class Stats extends StatefulWidget {
 
 class _StatsState extends State<Stats> {
   final Auth _auth = Auth();
-  List<String> months = [];
+  late List<String> months = [];
 
   @override
   void initState() {
@@ -37,7 +36,7 @@ class _StatsState extends State<Stats> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-        scrollDirection: Axis.horizontal, // Horizontal scrolling
+        scrollDirection: Axis.horizontal,
         itemCount: months.length,
         itemBuilder: (context, index) {
           String currentMonth = months[index];
