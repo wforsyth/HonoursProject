@@ -1,7 +1,1 @@
-enum MedicineType{
-  bottle,
-  pill,
-  syringe,
-  tablet,
-  other
-}
+enum MedicineType { bottle, pill, syringe, tablet, other }
