@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:honours_project/models/medicine_type.dart';
 import 'package:uuid/uuid.dart';
+import 'api/encryption.dart';
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -49,6 +50,7 @@ class Auth {
         'reminders': [],
         'journalEntries': [],
         'data': {},
+        'emergencyContact': [],
       });
     } catch (e) {
       throw Exception('Error creating user: $e');
@@ -87,6 +89,59 @@ class Auth {
       });
     } catch (e) {
       throw Exception('Error creating event: $e');
+    }
+  }
+
+  //Updates emergency contact object variable in database with relevant information
+  Future<void> createEmergencyContact({
+    required String name,
+    required String tele,
+    required String email,
+  }) async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      String encryptedTele = EncryptionHelper.encryptData(tele);
+      String encryptedEmail = EncryptionHelper.encryptData(email);
+      Map<String, dynamic> eventData = {
+        'name': name,
+        'tele': encryptedTele,
+        'email': encryptedEmail,
+      };
+
+      await _firestore.collection('users').doc(uid).update({
+        'emergencyContact': FieldValue.arrayUnion([eventData]),
+      });
+    } catch (e) {
+      throw Exception('Error creating emergency contact: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getEmergencyContact() async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
+        List<dynamic> contact = userDoc['emergencyContact'];
+        List<Map<String, dynamic>> decryptedContact = contact.map((contact) {
+          String decryptedTele = EncryptionHelper.decryptData(contact['tele']);
+          String decryptedEmail =
+              EncryptionHelper.decryptData(contact['email']);
+
+          return {
+            'name': contact['name'],
+            'tele': decryptedTele,
+            'email': decryptedEmail,
+          };
+        }).toList();
+
+        return decryptedContact;
+      } else {
+        throw Exception('User not found');
+      }
+    } catch (e) {
+      throw Exception('Error getting emergency contacts: $e');
     }
   }
 
@@ -277,10 +332,7 @@ class Auth {
             ? (monthData['missed'] as int).toDouble()
             : (monthData['missed'] as double? ?? 0.0);
 
-        return {
-          'Taken': taken,
-          'Missed': missed
-        };
+        return {'Taken': taken, 'Missed': missed};
       } else {
         throw Exception('User data not found');
       }

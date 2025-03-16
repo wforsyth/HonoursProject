@@ -16,16 +16,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController controllerPassword = TextEditingController();
 
   Future<void> login() async {
-    try{
-      await Auth().signInWithEmailAndPassword( 
-      email: controllerEmail.text, 
-      password: controllerPassword.text,);
+    try {
+      await Auth().signInWithEmailAndPassword(
+        email: controllerEmail.text,
+        password: controllerPassword.text,
+      );
 
       Navigator.pushNamed(context, AppRoutes.home);
-    } catch (e){
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('An unknown error occured: $e'),
-        ));
+      ));
     }
   }
 

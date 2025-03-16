@@ -20,18 +20,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController controllerSurname = TextEditingController();
 
   Future<void> register() async {
-    try{
+    try {
       await Auth().createUserWithEmailAndPassword(
-      firstName: controllerFirstName.text,
-      surname: controllerSurname.text, 
-      email: controllerEmail.text, 
-      password: controllerPassword.text,);
+        firstName: controllerFirstName.text,
+        surname: controllerSurname.text,
+        email: controllerEmail.text,
+        password: controllerPassword.text,
+      );
 
       Navigator.pushNamed(context, AppRoutes.login);
-    } catch (e){
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('An unknown error occured: $e'),
-        ));
+      ));
     }
   }
 

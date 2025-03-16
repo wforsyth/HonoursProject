@@ -87,17 +87,18 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
                   if (_selectedDate != null &&
                       _selectedTime != null &&
                       _descriptionController.text.isNotEmpty) {
-                    String date = _selectedDate!.toLocal().toString().split(' ')[0];
+                    String date =
+                        _selectedDate!.toLocal().toString().split(' ')[0];
                     String time = _selectedTime!.format(context);
                     String description = _descriptionController.text;
 
-                    try{
-                      Auth().createJournalEntry(time: time, date: date, description: description);
+                    try {
+                      Auth().createJournalEntry(
+                          time: time, date: date, description: description);
                       Navigator.pop(context);
-                    }catch(e){
+                    } catch (e) {
                       print("Error saving journal entry: $e");
                     }
-                    
                   }
                 },
                 child: Text('Save Journal Entry'),

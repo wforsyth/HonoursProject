@@ -12,8 +12,8 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String home = '/home';
-  static const String stats= '/stats';
-  static const String epilepsyJournal= '/epilepsyJournal';
+  static const String stats = '/stats';
+  static const String epilepsyJournal = '/epilepsyJournal';
   static const String overview = '/overview';
   static const String medEntry = '/medEntry';
   static const String emergencyContact = '/emergencyContact';
