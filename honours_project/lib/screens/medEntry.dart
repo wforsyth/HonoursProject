@@ -184,6 +184,7 @@ class _MedEntryState extends State<MedEntry> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(8.0),
                     backgroundColor: kOtherColor,
+                    foregroundColor: Colors.black,
                   ),
                   onPressed: _selectReminderDetails,
                   child: Text(_reminderTime == null
@@ -197,6 +198,7 @@ class _MedEntryState extends State<MedEntry> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(8.0),
                     backgroundColor: kOtherColor,
+                    foregroundColor: Colors.black,
                   ),
                   onPressed: () async {
                     for (int i = 0; i < _selectedDuration; i++) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants.dart';
 import '../Auth.dart';
 
 class JournalEntryScreen extends StatefulWidget {
@@ -79,6 +80,10 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
+              style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: kOtherColor),
             ),
             SizedBox(height: 16.0),
             Center(
