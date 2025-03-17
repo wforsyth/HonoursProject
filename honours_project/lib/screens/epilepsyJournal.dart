@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'journalEntry.dart';
 import '../auth.dart';
+import 'package:honours_project/constants.dart';
 
 class EpilepsyJournal extends StatefulWidget {
   @override
@@ -83,6 +84,8 @@ class _EpilepsyJournalState extends State<EpilepsyJournal> {
           }
         },
         child: Icon(Icons.add),
+        backgroundColor: kPrimaryColor,
+        foregroundColor: kScaffoldColor,
         tooltip: 'Add Journal Entry',
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:honours_project/constants.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:honours_project/routes.dart';
 import 'package:honours_project/auth.dart';
@@ -198,6 +199,8 @@ class _OverviewState extends State<Overview> {
           });
         },
         child: Icon(Icons.add),
+        backgroundColor: kPrimaryColor,
+        foregroundColor: kScaffoldColor,
         tooltip: 'Add Medication Reminder',
       ),
     );

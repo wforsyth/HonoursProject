@@ -42,7 +42,7 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Journal Entry'),
+        title: Text('Epialarm'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -59,6 +59,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
               children: [
                 TextButton(
                   onPressed: _selectDate,
+                  style: TextButton.styleFrom(
+                    foregroundColor: kOtherColor,
+                  ),
                   child: Text(
                     _selectedDate == null
                         ? 'Select Date'
@@ -67,6 +70,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
                 ),
                 TextButton(
                   onPressed: _selectTime,
+                  style: TextButton.styleFrom(
+                    foregroundColor: kOtherColor,
+                  ),
                   child: Text(_selectedTime == null
                       ? 'Select Time'
                       : 'Time: ${_selectedTime!.format(context)}'),
@@ -77,17 +83,25 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
               controller: _descriptionController,
               decoration: InputDecoration(
                 labelText: 'Description of seizure',
+                labelStyle:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                 border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
               ),
-              maxLines: 3,
+              maxLines: 4,
               style: Theme.of(context)
-                    .textTheme
-                    .titleSmall!
-                    .copyWith(color: kOtherColor),
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: Colors.black),
             ),
             SizedBox(height: 16.0),
             Center(
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: kOtherColor,
+                    foregroundColor: Colors.black),
                 onPressed: () {
                   if (_selectedDate != null &&
                       _selectedTime != null &&

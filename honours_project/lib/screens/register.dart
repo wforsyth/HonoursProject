@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:honours_project/constants.dart';
 import 'package:honours_project/routes.dart';
 import '../auth.dart';
 
@@ -134,6 +135,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   }
                 },
                 child: const Text('Register'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kOtherColor,
+                  foregroundColor: Colors.black,
+                )
               ),
             ],
           ),

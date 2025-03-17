@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:honours_project/routes.dart';
 import '../auth.dart';
+import '../constants.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -93,6 +94,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 child: Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kOtherColor,
+                  foregroundColor: Colors.black,
+                )
               ),
               TextButton(
                 onPressed: () {

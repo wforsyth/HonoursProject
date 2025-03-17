@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         DrawerHeader(
           child: Text('$_firstName $_surname'),
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: kOtherColor,
           ),
         ),
         SizedBox(height: 6),

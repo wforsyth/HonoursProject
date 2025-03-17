@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../auth.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:honours_project/constants.dart';
 
 class EmergencyContact extends StatefulWidget {
   @override
@@ -12,6 +13,35 @@ class _EmergencyContactState extends State<EmergencyContact> {
   String tele = '';
   String email = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _loadEmergencyContact();
+  }
+
+  Future<void> _loadEmergencyContact() async{
+    try{
+      Auth auth = Auth();
+      List<Map<String, dynamic>> emergencyContact = await auth.getEmergencyContact();
+
+      if (emergencyContact.isNotEmpty){
+        setState((){
+          name = emergencyContact[0]['name'];
+          tele = emergencyContact[0]['tele'];
+          email = emergencyContact[0]['email'];
+        });
+      } else{
+        setState((){
+          name = '';
+          tele = '';
+          email = '';
+        });
+      }
+    } catch (e){
+      throw Exception ('Error getting emergency contact: $e');
+    }
+  }
+
   void _showInputDialog(BuildContext context) {
     final _nameController = TextEditingController();
     final _teleController = TextEditingController();
@@ -21,13 +51,17 @@ class _EmergencyContactState extends State<EmergencyContact> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text('Enter Emergency Contact Details'),
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    labelStyle: TextStyle(color: Colors.black),
+                  ),
                   onChanged: (value) {
                     setState(() {
                       name = value;
@@ -36,7 +70,10 @@ class _EmergencyContactState extends State<EmergencyContact> {
                 ),
                 TextField(
                   controller: _teleController,
-                  decoration: InputDecoration(labelText: 'Phone Number'),
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                    labelStyle: TextStyle(color: Colors.black),
+                  ),
                   keyboardType: TextInputType.phone,
                   onChanged: (value) {
                     setState(() {
@@ -46,7 +83,10 @@ class _EmergencyContactState extends State<EmergencyContact> {
                 ),
                 TextField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: Colors.black),
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
                     setState(() {
@@ -70,8 +110,14 @@ class _EmergencyContactState extends State<EmergencyContact> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Emergency contact saved!')),
                 );
+
+                _loadEmergencyContact();
               },
               child: Text('Submit'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: kScaffoldColor,
+                backgroundColor: kOtherColor,
+              ),
             ),
           ],
         );
@@ -152,6 +198,7 @@ class _EmergencyContactState extends State<EmergencyContact> {
                     style: ElevatedButton.styleFrom(
                       primary: Colors.red,
                       minimumSize: Size(200, 60),
+                      foregroundColor: Colors.black,
                     ),
                     onPressed: getSendEmail,
                     child: Text('Send Email', style: TextStyle(fontSize: 18)),
@@ -161,6 +208,7 @@ class _EmergencyContactState extends State<EmergencyContact> {
                     style: ElevatedButton.styleFrom(
                       primary: Colors.red,
                       minimumSize: Size(200, 60),
+                      foregroundColor: Colors.black,
                     ),
                     onPressed: getSendText,
                     child: Text('Send Text', style: TextStyle(fontSize: 18)),
@@ -171,6 +219,8 @@ class _EmergencyContactState extends State<EmergencyContact> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showInputDialog(context),
         child: Icon(Icons.contact_emergency),
+        backgroundColor: kPrimaryColor,
+        foregroundColor: kScaffoldColor,
         tooltip: 'Add Emergency Contact',
       ),
     );
