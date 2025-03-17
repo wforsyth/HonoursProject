@@ -153,7 +153,9 @@ class Auth {
   }) async {
     try {
       String uid = _firebaseAuth.currentUser!.uid;
+      String journalId = Uuid().v4();
       Map<String, dynamic> eventData = {
+        'journalId' : journalId,
         'time': time,
         'date': date,
         'description': description,
@@ -252,6 +254,35 @@ class Auth {
       }
     } catch (e) {
       throw Exception('Error removing reminder: $e');
+    }
+  }
+
+//Function to delete journal entry from firestore database
+  Future<void> deleteJournalEntry(String journalId) async {
+    try {
+      String uid = _firebaseAuth.currentUser!.uid;
+
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+      List<dynamic> entries = userDoc['journalEntries'];
+
+      Map<String, dynamic>? deleteEntry;
+      for (var entry in entries) {
+        if (entry['journalId'] == journalId) {
+          deleteEntry = entry;
+          break;
+        }
+      }
+
+      if (deleteEntry != null) {
+        await _firestore.collection('users').doc(uid).update({
+          'journalEntries': FieldValue.arrayRemove([deleteEntry]),
+        });
+      } else {
+        throw Exception('Entry not found');
+      }
+    } catch (e) {
+      throw Exception('Error removing Entry: $e');
     }
   }
 

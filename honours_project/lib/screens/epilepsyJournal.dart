@@ -33,8 +33,15 @@ class _EpilepsyJournalState extends State<EpilepsyJournal> {
 
       for (var entry in loadedEntries) {
         String entryDateString = entry['date'];
-        DateTime entryTime = DateTime.parse(entryDateString);
-        DateTime normalisedReminderDate = normaliseToDay(entryTime);
+        String entryTimeString = entry['time'];
+        DateTime entryDate = DateTime.parse(entryDateString);
+        DateTime normalisedReminderDate = normaliseToDay(entryDate);
+
+        List<String> timeParts = entryTimeString.split(":");
+        TimeOfDay entryTime = TimeOfDay(
+          hour: int.parse(timeParts[0]),
+          minute: int.parse(timeParts[1]),
+          );
 
         if (selectedEvents[normalisedReminderDate] == null) {
           selectedEvents[normalisedReminderDate] = [];
@@ -42,8 +49,8 @@ class _EpilepsyJournalState extends State<EpilepsyJournal> {
         selectedEvents[normalisedReminderDate]!.add(entry);
 
         _entries.add(JournalEntry(
-          date: entryTime,
-          time: TimeOfDay.fromDateTime(entryTime),
+          date: entryDate,
+          time: entryTime,
           description: entry['description'],
         ));
       }
