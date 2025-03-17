@@ -117,55 +117,60 @@ class _MedEntryState extends State<MedEntry> {
               const PanelTitle(title: 'Medicine Type', isRequired: false),
               Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      MedicineTypeColumn(
-                          medicineType: MedicineType.bottle,
-                          name: "Bottle",
-                          iconValue: Icon(Icons.medication),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MedicineTypeColumn(
+                            medicineType: MedicineType.bottle,
+                            name: "Bottle",
+                            iconValue: Icon(Icons.medication),
+                            isSelected:
+                                _selectedMedicineType == MedicineType.bottle,
+                            onTap: () {
+                              setState(() {
+                                _selectedMedicineType = MedicineType.bottle;
+                              });
+                            }),
+                        MedicineTypeColumn(
+                          medicineType: MedicineType.pill,
+                          name: "Pill",
+                          iconValue: Icon(Icons.pie_chart),
                           isSelected:
-                              _selectedMedicineType == MedicineType.bottle,
+                              _selectedMedicineType == MedicineType.pill,
                           onTap: () {
                             setState(() {
-                              _selectedMedicineType = MedicineType.bottle;
+                              _selectedMedicineType = MedicineType.pill;
                             });
-                          }),
-                      MedicineTypeColumn(
-                        medicineType: MedicineType.pill,
-                        name: "Pill",
-                        iconValue: Icon(Icons.pie_chart),
-                        isSelected: _selectedMedicineType == MedicineType.pill,
-                        onTap: () {
-                          setState(() {
-                            _selectedMedicineType = MedicineType.pill;
-                          });
-                        },
-                      ),
-                      MedicineTypeColumn(
-                        medicineType: MedicineType.syringe,
-                        name: "Syringe",
-                        iconValue: Icon(Icons.medical_services),
-                        isSelected:
-                            _selectedMedicineType == MedicineType.syringe,
-                        onTap: () {
-                          setState(() {
-                            _selectedMedicineType = MedicineType.syringe;
-                          });
-                        },
-                      ),
-                      MedicineTypeColumn(
-                        medicineType: MedicineType.other,
-                        name: "Other",
-                        iconValue: Icon(Icons.question_mark),
-                        isSelected: _selectedMedicineType == MedicineType.other,
-                        onTap: () {
-                          setState(() {
-                            _selectedMedicineType = MedicineType.other;
-                          });
-                        },
-                      ),
-                    ],
+                          },
+                        ),
+                        MedicineTypeColumn(
+                          medicineType: MedicineType.syringe,
+                          name: "Syringe",
+                          iconValue: Icon(Icons.medical_services),
+                          isSelected:
+                              _selectedMedicineType == MedicineType.syringe,
+                          onTap: () {
+                            setState(() {
+                              _selectedMedicineType = MedicineType.syringe;
+                            });
+                          },
+                        ),
+                        MedicineTypeColumn(
+                          medicineType: MedicineType.other,
+                          name: "Other",
+                          iconValue: Icon(Icons.question_mark),
+                          isSelected:
+                              _selectedMedicineType == MedicineType.other,
+                          onTap: () {
+                            setState(() {
+                              _selectedMedicineType = MedicineType.other;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   )),
               const PanelTitle(title: "Interval Selection", isRequired: true),
               IntervalSelection(onIntervalSelected: (interval) {
