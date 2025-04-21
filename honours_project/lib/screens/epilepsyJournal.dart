@@ -3,11 +3,13 @@ import 'journalEntry.dart';
 import '../auth.dart';
 import 'package:honours_project/constants.dart';
 
+//The main screen widget for displaying the epilepsy journal
 class EpilepsyJournal extends StatefulWidget {
   @override
   _EpilepsyJournalState createState() => _EpilepsyJournalState();
 }
 
+//Loads journal entries as soon as the screen is open
 class _EpilepsyJournalState extends State<EpilepsyJournal> {
   List<JournalEntry> _entries = [];
 
@@ -23,6 +25,7 @@ class _EpilepsyJournalState extends State<EpilepsyJournal> {
     return DateTime(dateTime.year, dateTime.month, dateTime.day);
   }
 
+//Loads existing journal entries from firebase backend to be displayed
   Future<void> _loadJournalEntries() async {
     try {
       List<Map<String, dynamic>> loadedEntries =
@@ -61,6 +64,9 @@ class _EpilepsyJournalState extends State<EpilepsyJournal> {
     }
   }
 
+//Main widget display for screen that displays journal entries
+//Scaffold shows either a message stating there is no journal entries
+//Or a list of journal entry cards
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,6 +105,7 @@ class _EpilepsyJournalState extends State<EpilepsyJournal> {
   }
 }
 
+//Collapsible card to display one journal entry
 class EntryCard extends StatefulWidget {
   final JournalEntry entry;
 
@@ -108,6 +115,7 @@ class EntryCard extends StatefulWidget {
   _EntryCardState createState() => _EntryCardState();
 }
 
+//Controls information displayed when journal entry is collapsed
 class _EntryCardState extends State<EntryCard> {
   bool _isExpanded = false;
 
@@ -136,6 +144,7 @@ class _EntryCardState extends State<EntryCard> {
   }
 }
 
+//Journal entry model
 class JournalEntry {
   final DateTime date;
   final TimeOfDay time;

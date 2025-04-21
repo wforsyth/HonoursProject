@@ -1,10 +1,12 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+//Class to manage all local notification functionality
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+//Function used to initialise notification settings for android
   Future<void> initialiseNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -21,6 +23,7 @@ class NotificationService {
     );
   }
 
+//Schedules high priority notification at time set by user
   Future<void> scheduleNotification(
       DateTime scheduledTime, String title, String body) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -48,6 +51,7 @@ class NotificationService {
     );
   }
 
+//Schedules a recurring notification using an interval variable
   Future<void> scheduleRecurringNotification(DateTime scheduledTime,
       String title, String body, Duration interval) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -74,6 +78,7 @@ class NotificationService {
             UILocalNotificationDateInterpretation.wallClockTime);
   }
 
+//Function to cancel notification based on notificationId
   Future<void> cancelNotification(int notificationId) async {
     await flutterLocalNotificationsPlugin.cancel(notificationId);
   }

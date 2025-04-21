@@ -19,6 +19,7 @@ class _EmergencyContactState extends State<EmergencyContact> {
     _loadEmergencyContact();
   }
 
+//Loads emergency contact details from database
   Future<void> _loadEmergencyContact() async{
     try{
       Auth auth = Auth();
@@ -42,6 +43,8 @@ class _EmergencyContactState extends State<EmergencyContact> {
     }
   }
 
+//Pop-up input dialog used to input emergency contact name, phone number, and email address
+//Information extracted from controller to then be entered into backend database encrypted
   void _showInputDialog(BuildContext context) {
     final _nameController = TextEditingController();
     final _teleController = TextEditingController();
@@ -125,6 +128,7 @@ class _EmergencyContactState extends State<EmergencyContact> {
     );
   }
 
+//Launches users default email app using mailto
   Future<void> _sendEmail(String email) async {
     try {
       var url = Uri.parse("mailto:$email");
@@ -138,6 +142,7 @@ class _EmergencyContactState extends State<EmergencyContact> {
     }
   }
 
+//Launches users default texting app using sms
   Future<void> _sendText(String text) async {
     try {
       var url = Uri.parse("sms:$text");
@@ -151,6 +156,8 @@ class _EmergencyContactState extends State<EmergencyContact> {
     }
   }
 
+//Loads emergency contact email from database
+//Enters details into default email app if email exists
   Future<void> getSendEmail() async {
     try {
       Auth auth = Auth();
@@ -168,6 +175,8 @@ class _EmergencyContactState extends State<EmergencyContact> {
     }
   }
 
+//Loads emergency contact phone number from database
+//Enters details into default texting app if phone number exists
   Future<void> getSendText() async {
     try {
       Auth auth = Auth();
@@ -185,6 +194,8 @@ class _EmergencyContactState extends State<EmergencyContact> {
     }
   }
 
+//Main widget that displays either text stating that no emergency contact has been added
+//Or two red buttons for either texting or emailing emergency contact
   @override
   Widget build(BuildContext context) {
     return Scaffold(

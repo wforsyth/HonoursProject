@@ -8,6 +8,8 @@ import 'overview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../auth.dart';
 
+//Defines home screen state 
+//Provides currently logged in user and sign out functionality
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -28,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _firstName;
   String? _surname;
 
+//List of widgets used in bottom navigation bar
   final List<Widget> _screens = [
     Overview(),
     EpilepsyJournal(),
@@ -35,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     EmergencyContact(),
   ];
 
+//Gets currently logged in users first and surname
   Future<void> _fetchUserName() async {
     Map<String, String> details = await Auth().getUserName();
     setState(() {
@@ -60,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Epialarm'),
       ),
+      //Collapsable side drawer to display users name and log out functionality
       drawer: Drawer(
           child: ListView(padding: EdgeInsets.zero, children: <Widget>[
         DrawerHeader(
@@ -78,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ])),
+      //Cycles through widgets depending on which item is selected in bottom navigation bar
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
