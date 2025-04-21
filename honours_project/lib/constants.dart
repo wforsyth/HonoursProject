@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Constant colour scheme called throughout application
 const Color kPrimaryColor = Color(0xFF399DB8);
 const Color kScaffoldColor = Color(0xFFF3F4F8);
 const Color kSecondaryColor = Color(0xFFF95C54);

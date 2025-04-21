@@ -8,7 +8,9 @@ import 'screens/epilepsyJournal.dart';
 import 'screens/overview.dart';
 import 'screens/medEntry.dart';
 
+//Class to manage all named routes in the app
 class AppRoutes {
+  //Route names
   static const String login = '/login';
   static const String register = '/register';
   static const String home = '/home';
@@ -18,6 +20,7 @@ class AppRoutes {
   static const String medEntry = '/medEntry';
   static const String emergencyContact = '/emergencyContact';
 
+//Maps named routes to widgets within the application
   static Map<String, WidgetBuilder> routes = {
     login: (context) => LoginScreen(),
     register: (context) => RegisterScreen(),

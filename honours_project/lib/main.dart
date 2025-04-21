@@ -9,30 +9,38 @@ import 'constants.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+//Background notification handler for firebaseMessaging
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message: ${message.messageId}');
 }
 
+//Plugin to show flutter local notifications
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+//App initialisation
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //Firebase initialisation with platform specific options
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+//Loads and sets local timezones for setting up notifications
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation('Europe/London'));
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+//Configures local notications for Android
   const AndroidInitializationSettings initialisationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
   const InitializationSettings initialisationSettings = InitializationSettings(
     android: initialisationSettingsAndroid,
   );
 
+//Initialises local notifications plugin
+//Handles user taps on notification
   await flutterLocalNotificationsPlugin.initialize(initialisationSettings,
       onSelectNotification: (String? payload) async {
     if (payload != null) {
@@ -53,6 +61,7 @@ void main() async {
   runApp(MyApp());
 }
 
+//Sets up app theme and routing
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

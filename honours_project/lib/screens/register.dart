@@ -20,6 +20,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController controllerFirstName = TextEditingController();
   final TextEditingController controllerSurname = TextEditingController();
 
+//Registers user using function from auth
+//Takes information from controllers and enters into firebase auth and firestore
+//Navigates user to log in page after
   Future<void> register() async {
     try {
       await Auth().createUserWithEmailAndPassword(
@@ -37,6 +40,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+//Displays first name, surname, email, and password form for user to fill in
+//Creates new user account based on valid information
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -8,10 +8,12 @@ class JournalEntryScreen extends StatefulWidget {
 }
 
 class _JournalEntryScreenState extends State<JournalEntryScreen> {
+  //Variables for storing and managing user input
   TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
+//Opens a date picker dialog and updates variable based on user input
   Future<void> _selectDate() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -26,6 +28,7 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
     }
   }
 
+//Opens time picker dialog and updates variable based on user input
   Future<void> _selectTime() async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
@@ -38,6 +41,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
     }
   }
 
+//Widget is called upon in Epilepsy Journal screen
+//Requires the user to choose a date, time, and enter description of their seizure event
+//Stores journal entry into database and returns user to epilepsy journal screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(

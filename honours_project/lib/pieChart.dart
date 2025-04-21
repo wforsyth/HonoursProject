@@ -7,6 +7,7 @@ class MonthPieChart extends StatelessWidget {
 
   MonthPieChart({required this.month, required this.data});
 
+//Display for pie chart widget called in stats screen
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -16,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController controllerEmail = TextEditingController();
   final TextEditingController controllerPassword = TextEditingController();
 
+//Logs user into application using function in Auth
+//Pushes user to home screen if login is successful
   Future<void> login() async {
     try {
       await Auth().signInWithEmailAndPassword(
@@ -31,6 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+//Login page requests that user enters email and password
+//Provides button link to registration page if user is not registered
+//Uses regex and if statements to ensure that both inputs have been entered and are valid
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -12,6 +12,7 @@ class MedEntry extends StatefulWidget {
   State<MedEntry> createState() => _MedEntryState();
 }
 
+//Varaibles and controllers for handling screen state and user input
 class _MedEntryState extends State<MedEntry> {
   late TextEditingController nameController;
   late TextEditingController dosageController;
@@ -31,6 +32,7 @@ class _MedEntryState extends State<MedEntry> {
     dosageController.dispose();
   }
 
+//Initialises controllers, scaffold key, and notification services
   @override
   void initState() {
     super.initState();
@@ -42,6 +44,7 @@ class _MedEntryState extends State<MedEntry> {
     _notificationService.initialiseNotifications();
   }
 
+//Shows a date and time picker for setting scheduled reminder
   Future<void> _selectReminderDetails() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -64,6 +67,9 @@ class _MedEntryState extends State<MedEntry> {
     }
   }
 
+//Main scaffold structure for inputting reminder details
+//Stores medication reminder in backend database
+//Sets recurring notification based on date and time chosen by user
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -276,6 +282,8 @@ class DurationSelection extends StatefulWidget {
   State<DurationSelection> createState() => _DurationSelectionState();
 }
 
+//Provides a dropdown for user to choose duration of their medication reminders
+//Is called in main body widget
 class _DurationSelectionState extends State<DurationSelection> {
   final _intervals = [1, 7, 14, 30];
   var _selected = 0;
@@ -332,6 +340,8 @@ class _DurationSelectionState extends State<DurationSelection> {
   }
 }
 
+//Provides a dropdown for user to choose intervals in hours of their medication reminders
+//Is called in main body widget
 class _IntervalSelectionState extends State<IntervalSelection> {
   final _intervals = [2, 4, 6, 8];
   var _selected = 0;
@@ -387,6 +397,8 @@ class _IntervalSelectionState extends State<IntervalSelection> {
   }
 }
 
+//Displays medicine types as tappable icons
+//Is called in main body widget
 class MedicineTypeColumn extends StatelessWidget {
   const MedicineTypeColumn(
       {Key? key,
@@ -462,6 +474,7 @@ class PanelTitle extends StatelessWidget {
   final String title;
   final bool isRequired;
 
+//Styled title widget for form sections
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -17,6 +17,7 @@ class _StatsState extends State<Stats> {
     _getMonths();
   }
 
+//Gets previous 12 months from the current month
   void _getMonths() {
     DateTime now = DateTime.now();
     for (int i = 0; i < 12; i++) {
@@ -28,10 +29,12 @@ class _StatsState extends State<Stats> {
     setState(() {});
   }
 
+//Retrieves monthly data on medication reminders from backend database
   Future<Map<String, double>> _getMonthlyData(String month) async {
     return await _auth.getMonthlyData(month);
   }
 
+//Displays monthly data in a pie chart
   @override
   Widget build(BuildContext context) {
     return Scaffold(

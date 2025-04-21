@@ -10,6 +10,7 @@ class Overview extends StatefulWidget {
 }
 
 class _OverviewState extends State<Overview> {
+  //Formats the calendar view
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -17,10 +18,12 @@ class _OverviewState extends State<Overview> {
   Map<DateTime, List<Map<String, dynamic>>> selectedEvents = {};
   final Auth _auth = Auth();
 
+//Normalises dateTime variable to ignore time and group events by day
   DateTime normaliseToDay(DateTime dateTime) {
     return DateTime(dateTime.year, dateTime.month, dateTime.day);
   }
 
+//Fetches reminder date from database
   Future<void> _fetchReminders() async {
     try {
       List<Map<String, dynamic>> reminders = await _auth.getReminders();
@@ -48,6 +51,7 @@ class _OverviewState extends State<Overview> {
     return selectedEvents[normalisedDay] ?? [];
   }
 
+//Send updated reminder status ('taken' or 'missed') to backend
   Future<void> _updateReminderStatus(String reminderId, String status) async {
     try {
       await _auth.updateReminderStatus(status, reminderId);
@@ -57,6 +61,7 @@ class _OverviewState extends State<Overview> {
     }
   }
 
+//Updates data in backend whether medication was taken or not
   Future<void> _updateData(bool isTaken) async {
     try {
       await _auth.updateData(isTaken);
@@ -81,6 +86,9 @@ class _OverviewState extends State<Overview> {
     _fetchReminders();
   }
 
+//Displays interactive calendar API
+//Displays medication reminders created by for the day the user has tapped on calender
+//Allows user to interact with reminder when medication is due to be taken
   @override
   Widget build(BuildContext context) {
     return Scaffold(
